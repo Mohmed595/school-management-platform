@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="blueGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1E40AF" />
+    </linearGradient>
+    <linearGradient id="goldGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <filter id="shadowMask" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0F172A" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Full-bleed background for maskable icon cropping -->
+  <rect width="512" height="512" fill="url(#blueGradMask)" />
+
+  <!-- Inner emblem scaled 82% to fit comfortably within the 80% safe zone -->
+  <g transform="translate(46, 46) scale(0.82)" filter="url(#shadowMask)">
+    <!-- Graduation Cap / Scholar Motif -->
+    <polygon points="256,120 400,192 256,264 112,192" fill="#FFFFFF" />
+    <path d="M168,224 L168,272 C168,310 207,336 256,336 C305,336 344,310 344,272 L344,224 L256,264 Z" fill="#E2E8F0" />
+    <path d="M368,208 L384,300 C384,312 376,322 364,322 C352,322 346,312 346,300 L356,214" fill="none" stroke="url(#goldGradMask)" stroke-width="8" stroke-linecap="round" />
+    <circle cx="364" cy="326" r="10" fill="url(#goldGradMask)" />
+    <circle cx="256" cy="192" r="9" fill="url(#goldGradMask)" />
+
+    <!-- Open Book / Educational Foundation -->
+    <path d="M128,348 C180,332 230,342 256,360 C282,342 332,332 384,348 L384,396 C332,380 282,390 256,408 C230,390 180,380 128,396 Z" fill="#FFFFFF" opacity="0.95" />
+    <line x1="256" y1="360" x2="256" y2="408" stroke="url(#goldGradMask)" stroke-width="5" stroke-linecap="round" />
+  </g>
+</svg>

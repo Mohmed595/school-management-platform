@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1E40AF" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0F172A" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Background Base (Soft rounded for standard icon) -->
+  <rect width="512" height="512" rx="112" fill="url(#blueGrad)" />
+
+  <!-- Subtle Inner Ring Highlight -->
+  <rect x="8" y="8" width="496" height="496" rx="104" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="6" />
+
+  <!-- Central Emblem with Drop Shadow -->
+  <g filter="url(#shadow)">
+    <!-- Graduation Cap / Scholar Motif -->
+    <!-- Diamond Mortarboard Top -->
+    <polygon points="256,120 400,192 256,264 112,192" fill="#FFFFFF" />
+    <!-- Cap Under-band -->
+    <path d="M168,224 L168,272 C168,310 207,336 256,336 C305,336 344,310 344,272 L344,224 L256,264 Z" fill="#E2E8F0" />
+    <!-- Golden Tassel Ribbon and Ornament -->
+    <path d="M368,208 L384,300 C384,312 376,322 364,322 C352,322 346,312 346,300 L356,214" fill="none" stroke="url(#goldGrad)" stroke-width="8" stroke-linecap="round" />
+    <circle cx="364" cy="326" r="10" fill="url(#goldGrad)" />
+    <circle cx="256" cy="192" r="9" fill="url(#goldGrad)" />
+
+    <!-- Open Book / Educational Foundation -->
+    <path d="M128,348 C180,332 230,342 256,360 C282,342 332,332 384,348 L384,396 C332,380 282,390 256,408 C230,390 180,380 128,396 Z" fill="#FFFFFF" opacity="0.95" />
+    <!-- Book Center Spine -->
+    <line x1="256" y1="360" x2="256" y2="408" stroke="url(#goldGrad)" stroke-width="5" stroke-linecap="round" />
+  </g>
+</svg>

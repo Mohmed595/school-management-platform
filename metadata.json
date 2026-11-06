@@ -1,0 +1,6 @@
+{
+  "name": "School Management Platform Owner Dashboard",
+  "description": "Production-ready School Management Platform with 300-day Trusted Device and Saved Accounts switching system for Egyptian Schools in Egyptian Arabic (RTL, Linear/Stripe aesthetic)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
