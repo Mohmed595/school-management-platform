@@ -1,8 +1,8 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import crypto from 'crypto';
 import compression from 'compression';
-import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import { db } from './src/db/index.ts';
 import {
@@ -394,13 +394,17 @@ function getAiClient(): GoogleGenAI | null {
   return aiClient;
 }
 
-async function startServer() {
+async function createApp() {
   const app = express();
-  const PORT = 3000;
 
   // Initialize and ensure Central Extensions tables and initial catalog are seeded
   initializeExtensionsDatabase().catch((err) => {
     console.error('[Extensions DB Initialization Warning]:', err);
+  });
+
+  // Seed the initial platform schools when the central database is empty.
+  ensureCentralDatabaseSchoolsSeeded().catch((err) => {
+    console.error('[Schools DB Seeding Warning]:', err);
   });
 
   // High-performance gzip/deflate compression for massive JSON & payload efficiency
@@ -1891,6 +1895,8 @@ ${JSON.stringify(cleanedContext, null, 2)}`;
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {
+    // Dynamic import keeps Vite out of the production/serverless bundle.
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
@@ -1904,14 +1910,38 @@ ${JSON.stringify(cleanedContext, null, 2)}`;
     });
   }
 
-  const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://0.0.0.0:${PORT} with Cloud SQL PostgreSQL`);
-  });
-
-  // Generous timeouts for heavy multi-thousand student operations
-  server.keepAliveTimeout = 120000; // 2 minutes
-  server.headersTimeout = 125000;
-  server.requestTimeout = 300000; // 5 minutes
+  return app;
 }
 
-startServer();
+// Single shared Express app instance.
+// On a normal server it is attached to a listener; on serverless platforms
+// (Vercel) it is imported by api/index.ts and invoked per request.
+let appPromise: Promise<express.Express> | null = null;
+
+export function getApp(): Promise<express.Express> {
+  if (!appPromise) {
+    appPromise = createApp();
+  }
+  return appPromise;
+}
+
+const isServerless = Boolean(process.env.VERCEL);
+
+if (!isServerless) {
+  getApp()
+    .then((app) => {
+      const PORT = Number(process.env.PORT) || 3000;
+      const server = app.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server running on http://0.0.0.0:${PORT}`);
+      });
+
+      // Generous timeouts for heavy multi-thousand student operations
+      server.keepAliveTimeout = 120000; // 2 minutes
+      server.headersTimeout = 125000;
+      server.requestTimeout = 300000; // 5 minutes
+    })
+    .catch((error) => {
+      console.error('[FATAL] Failed to start server:', error);
+      process.exit(1);
+    });
+}

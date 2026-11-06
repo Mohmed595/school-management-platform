@@ -7,6 +7,8 @@ const sqlHost = process.env.SQL_HOST;
 const sqlDbName = process.env.SQL_DB_NAME;
 const user = process.env.SQL_ADMIN_USER;
 const password = process.env.SQL_ADMIN_PASSWORD;
+// Managed Postgres providers (Neon/Supabase/Render) require TLS.
+const useSsl = !sqlHost?.startsWith('/') && sqlHost !== 'localhost' && sqlHost !== '127.0.0.1';
 
 if (!sqlHost) {
   throw new Error("SQL_HOST must be set in environment variables.");
@@ -31,7 +33,7 @@ export default defineConfig({
     user: user,
     password: password,
     database: sqlDbName,
-    ssl: false,
+    ssl: useSsl ? { rejectUnauthorized: false } : false,
   },
   verbose: true,
 });

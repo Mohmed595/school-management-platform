@@ -16,11 +16,26 @@ export const createPool = () => {
     // safely preserving 17-20 connection slots for migrations, background jobs, and PostgreSQL internal buffers.
     // Can be overridden dynamically via SQL_MAX_POOL environment variable when Cloud SQL tier is upgraded.
     const maxPoolSize = process.env.SQL_MAX_POOL ? parseInt(process.env.SQL_MAX_POOL, 10) : 6;
+
+    const sqlHost = process.env.SQL_HOST || '';
+    // Cloud SQL Unix sockets look like "/cloudsql/project:region:instance" and must be
+    // passed as the socket directory. Managed providers (Neon, Supabase, Render, RDS…)
+    // require TLS, while local/plain Postgres over TCP usually does not.
+    const isUnixSocket = sqlHost.startsWith('/');
+    const useSsl =
+      process.env.SQL_SSL === 'false'
+        ? false
+        : process.env.SQL_SSL === 'true'
+          ? true
+          : !isUnixSocket && sqlHost !== 'localhost' && sqlHost !== '127.0.0.1';
+
     global._postgresPool = new Pool({
-      host: process.env.SQL_HOST,
+      // For Unix sockets pg expects the socket directory path; for TCP a hostname/IP.
+      host: sqlHost,
       user: process.env.SQL_USER,
       password: process.env.SQL_PASSWORD,
       database: process.env.SQL_DB_NAME,
+      ...(useSsl ? { ssl: { rejectUnauthorized: false } } : {}),
       max: Number.isFinite(maxPoolSize) && maxPoolSize > 0 ? maxPoolSize : 6,
       min: 1,
       idleTimeoutMillis: 15000,
